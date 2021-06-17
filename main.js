@@ -23,15 +23,12 @@ const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3];
 const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5];
 
 
-// Add your functions below:
+// Functions below:
 
-const luhnsDetermination = (array) => {
-  let arrayAddition = array.reduce((acc, val) => {return acc + val}, 0);
-  if(arrayAddition % 10 === 0) {
-    return true
-  } else { return false;}
-};
 
+//Luhn's Algorithm
+
+//Function called to prep and transforms the credit card number array. The function will take in the array parameter. Perform the first two steps of Luhn's algorithm, and return a transformed array. 
 const luhnsArrayTransform = (array) => {
     let temp = [];
 
@@ -50,42 +47,53 @@ const luhnsArrayTransform = (array) => {
   return temp;
 }
 
-
-const validateCred = (array) => {
-
-    let transformed = luhnsArrayTransform(array);
-    return luhnsDetermination(transformed);
-
+//Function called to take the array that was prepped and transformed by luhnsArrayTransform() and determine if the array holds a valid/invalid credit card number. The function performs the last two steps of Luhn's algorithm. If the credit card number is valid, the function returns true. Otherwise, false. 
+const luhnsDetermination = (array) => {
+  let arrayAddition = array.reduce((acc, val) => {return acc + val}, 0);
+  if(arrayAddition % 10 === 0) {
+    return true
+  } else { return false;}
 };
 
 
+// ------------------------------
 
-const findInvalidCards = (array) => {
-  let isInValid = array.filter((element) => {
-    return !validateCred(element) 
+// The function findInvalidCards takes in an array (nested arrays) of credit card numbers. The array is then filtered. Each iteration of the filter loop passes the the sub array element (credit card number) into the validateCred function and determines if the number is valid or invalid. The findInvalidCards function will return a nested array of only invalid credit card numbers. 
+
+const validateCred = (array) => {
+    let transformed = luhnsArrayTransform(array);
+    return luhnsDetermination(transformed);
+};
+
+
+const findInvalidCards = (nestedArray) => {
+  let isInValid = nestedArray.filter((element) => {
+    return !validateCred(element);
     });
 
   return isInValid;
 }
 
-const invalidCardCompanies = (nestedArray) => {
 
-    let companies = {};
+// The function invalidCardCompanies takes in a nested array as a parameter. The nested array should be an array of only invalid card numbers. The function will return a singular array of credit card companies associated with the invalid card numbers.
+
+const invalidCardCompanies = (nestedArray) => {
+    let invalidCompanies = {};
 
     nestedArray.forEach((element) => {
       let idIndex = element[0]
           switch(idIndex) {
             case 3:
-              companies[3] = 'Amex';
+              invalidCompanies[3] = 'Amex';
               break;
              case 4:
-              companies[4] = 'Visa';
+              invalidCompanies[4] = 'Visa';
               break; 
             case 5:
-              companies[5] = 'Mastercard';
+              invalidCompanies[5] = 'Mastercard';
               break;   
             case 6:
-              companies[6] = 'Discover';
+              invalidCompanies[6] = 'Discover';
               break;   
             default:
               console.log('Company not Found');
@@ -94,11 +102,13 @@ const invalidCardCompanies = (nestedArray) => {
 
     })
     
-  return Object.values(companies)
+  return Object.values(invalidCompanies)
 };
+
+
 
 const invalidCards = findInvalidCards(batch)
 const companies = invalidCardCompanies(invalidCards);
 
-console.log(companies)
-
+console.log("Invalid Card Companies", companies)
+console.log("Invalid Card Numbers", invalidCards)
