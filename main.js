@@ -23,10 +23,17 @@ const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3];
 const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5];
 
 
-// Functions below:
+// Add your functions below:
 
-const validateCred = (array) => {
-  let temp = [];
+const luhnsDetermination = (array) => {
+  let arrayAddition = array.reduce((acc, val) => {return acc + val}, 0);
+  if(arrayAddition % 10 === 0) {
+    return true
+  } else { return false;}
+};
+
+const luhnsArrayTransform = (array) => {
+    let temp = [];
 
   for(let i = array.length-1; i>=0; i-=2) {
       let elementToHold = array[i];
@@ -39,22 +46,59 @@ const validateCred = (array) => {
              temp.push(elementToDouble)
         } else { temp.push(elementToDouble)}
       }
-  };
+  }
+  return temp;
+}
 
-  let addedNums = temp.reduce((acc, val) => {return acc + val}, 0);
-  if(addedNums % 10 === 0) {
-    return true
-  } else { return false;}
+
+const validateCred = (array) => {
+
+    let transformed = luhnsArrayTransform(array);
+    return luhnsDetermination(transformed);
+
 };
 
 
+
 const findInvalidCards = (array) => {
-  let isValid = array.map((element) => {return validateCred(element) });
+  let isInValid = array.filter((element) => {
+    return !validateCred(element) 
+    });
 
-  return isValid;
+  return isInValid;
 }
-console.log(findInvalidCards(batch));
 
+const invalidCardCompanies = (nestedArray) => {
 
+    let companies = {};
 
+    nestedArray.forEach((element) => {
+      let idIndex = element[0]
+          switch(idIndex) {
+            case 3:
+              companies[3] = 'Amex';
+              break;
+             case 4:
+              companies[4] = 'Visa';
+              break; 
+            case 5:
+              companies[5] = 'Mastercard';
+              break;   
+            case 6:
+              companies[6] = 'Discover';
+              break;   
+            default:
+              console.log('Company not Found');
+              break;    
+          }
+
+    })
+    
+  return Object.values(companies)
+};
+
+const invalidCards = findInvalidCards(batch)
+const companies = invalidCardCompanies(invalidCards);
+
+console.log(companies)
 
